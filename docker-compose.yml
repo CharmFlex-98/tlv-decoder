@@ -2,6 +2,6 @@ services:
   web:
     image: charmflex/tlv-decoder:latest
     ports:
-      - "3000:3000"
+      - "3080:3000"
     environment:
       - NODE_ENV=production
