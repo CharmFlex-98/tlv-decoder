@@ -35,7 +35,7 @@ jobs:
         passphrase: ${{ secrets.SERVER_SSH_PW }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         source: "docker-compose.yml"
-        target: "/servers/tlv-decoder/"
+        target: "/servers/tlv_server/"
 
     - name: pull image and deploy
       uses: appleboy/ssh-action@v1.0.0
@@ -45,5 +45,5 @@ jobs:
         passphrase: ${{ secrets.SERVER_SSH_PW }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          cd servers/tlv-decoder
+          cd servers/tlv_server
           docker compose up -d
