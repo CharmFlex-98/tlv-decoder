@@ -3,9 +3,11 @@ import { useState } from 'react'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
-// ====== Types & Helpers remain unchanged ======
+// ===== Types & Helpers remain unchanged ======
 type TLVRecord = {
   tag: string
   length: number
@@ -138,23 +140,23 @@ function TLVNode({
   const hasChildren = !!record.children && record.children.length > 0
 
   return (
-    <Card className="mt-2">
+    <Card className="shadow-sm border border-zinc-200 bg-white rounded-xl">
       <CardContent className="text-sm space-y-1 pt-4">
         <div className="flex items-start justify-between">
           <div>
-            <div>
-              <strong>Tag:</strong> {record.tag}
+            <div className="font-semibold">
+              Tag: <span className="text-blue-600">{record.tag}</span>
               {hasChildren && (
                 <button
                   onClick={() => setExpanded(v => !v)}
-                  className="ml-2 text-xs text-blue-600"
+                  className="ml-2 text-xs text-blue-500 hover:underline"
                 >
                   [{expanded ? '-' : '+'}]
                 </button>
               )}
             </div>
-            <div><strong>Length:</strong> {record.length}</div>
-            <div className='break-all whitespace-normal'><strong>Value:</strong> {record.valueHex}</div>
+            <div className="text-zinc-700">Length: {record.length}</div>
+            <div className='break-all whitespace-normal text-zinc-700'>Value: {record.valueHex}</div>
           </div>
           {!hasChildren && (
             <Select value={record.format} onValueChange={(val) => onUpdateFormat(path, val as TLVRecord['format'])}>
@@ -171,7 +173,7 @@ function TLVNode({
           )}
         </div>
         {!hasChildren && (
-          <div><strong>Decoded:</strong> {record.decoded}</div>
+          <div className="text-zinc-700"><strong>Decoded:</strong> {record.decoded}</div>
         )}
         {hasChildren && expanded && (
           <div className="ml-4 mt-2 space-y-2">
@@ -213,27 +215,41 @@ export default function TLVDecoderCard() {
   }
 
   return (
-    <div className="p-4 flex gap-4 h-screen mt-4">
-      <div className="flex flex-col w-1/2">
-        <Textarea
-          placeholder="Enter TLV hex string or byte array"
-          value={hex}
-          onChange={(e) => handleHexChange(e.target.value)}
-          className={cn(
-            isError ? "border-red-500" : "border-black",
-            "h-[30vh] break-words"
+    <div className="p-6 h-screen bg-gradient-to-b from-white to-zinc-50">
+      {/* Header */}
+      <header className="mb-6">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900">TLV Decoder</h1>
+        <p className="text-sm text-zinc-600 mt-1">
+          Paste your TLV hex string or byte array below to decode and explore the tag-length-value structure interactively.
+        </p>
+      </header>
+      <Separator className="mb-6" />
+
+      <div className="flex gap-4 h-[calc(100%-100px)]">
+        {/* Input Area */}
+        <div className="flex flex-col w-1/2">
+          <Textarea
+            placeholder="Enter TLV hex string or byte array"
+            value={hex}
+            onChange={(e) => handleHexChange(e.target.value)}
+            className={cn(
+              isError ? "border-red-500" : "border-zinc-300",
+              "h-[30vh] break-words rounded-lg shadow-sm"
+            )}
+          />
+          {isError && <div className="text-sm text-red-600 mt-1">Invalid TLV input. Please check the format.</div>}
+        </div>
+
+        {/* Output Area */}
+        <ScrollArea className="flex-1 rounded-lg border border-zinc-200 bg-white p-4 shadow-inner">
+          {records.length === 0 ? (
+            <div className="text-sm text-zinc-500">No TLV parsed yet.</div>
+          ) : (
+            records.map((r, idx) => (
+              <TLVNode key={`${r.tag}-${idx}`} record={r} path={[idx]} onUpdateFormat={onUpdateFormat} />
+            ))
           )}
-        />
-        {isError && <div className="text-sm text-red-600 mt-1">Invalid TLV input. Please check the format.</div>}
-      </div>
-      <div className="flex-1 space-y-4 overflow-auto">
-        {records.length === 0 ? (
-          <div className="text-sm text-zinc-500">No TLV parsed yet.</div>
-        ) : (
-          records.map((r, idx) => (
-            <TLVNode key={`${r.tag}-${idx}`} record={r} path={[idx]} onUpdateFormat={onUpdateFormat} />
-          ))
-        )}
+        </ScrollArea>
       </div>
     </div>
   )
