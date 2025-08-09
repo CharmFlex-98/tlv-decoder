@@ -102,7 +102,7 @@ function parseTLV(hexOrBytes: string | Uint8Array): TLVRecord[] {
   } else if (hexOrBytes instanceof Uint8Array) {
     buf = hexOrBytes
   } else {
-    buf = new Uint8Array(Array.from(hexOrBytes as any))
+    throw new Error('Invalid byte array')
   }
   return parseBuffer(buf, 0, buf.length)
 }
