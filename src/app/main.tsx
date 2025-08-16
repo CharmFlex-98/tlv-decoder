@@ -9,15 +9,15 @@ const menuGroups: MenuGroup[] = [
         items: [
             {
                 title: "TLV Decoder",
-                path: "/tlv-decoder"
+                path: "/tlv-decoder", 
             }, 
             {
                 title: "Json Formatter",
-                path: "/json-formatter"
+                path: "/json-formatter", 
             }, 
             {
                 title: "String Encoder",
-                path: "/byte-converter"
+                path: "/byte-converter", 
             }
         ]
     }, 
