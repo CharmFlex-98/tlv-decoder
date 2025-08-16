@@ -4,6 +4,7 @@ import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarGroupC
 import Link from "next/link";
 import { AppRoute } from "next/dist/build/swc/types";
 import { AppRouteNames, Value } from "@/routes/routes";
+import { useState } from "react";
 
 
 export interface MenuGroup {
@@ -13,7 +14,8 @@ export interface MenuGroup {
 
 interface MenuItem {
     title: string,
-    path: string
+    path: string,
+    isActive: boolean
 }
 
 interface AppSideBarProps {
@@ -21,7 +23,19 @@ interface AppSideBarProps {
 }
 
 
-function AppSideBar({ menuGroups }: AppSideBarProps) {
+function AppSideBar({ menuGroups: initialGroups }: AppSideBarProps) {
+    const [menuGroups, setMenuGroups] = useState(initialGroups)
+    const handleClick = ((clickedItem: MenuItem) => {
+        setMenuGroups(menuGroups.map(group => ({
+            ...group,
+            items: group.items.map(item => ({
+                ...item,
+                isActive: item.path === clickedItem.path
+            }))
+        })));
+    })
+
+
     return (
         <Sidebar>
             <SidebarContent>
@@ -29,24 +43,24 @@ function AppSideBar({ menuGroups }: AppSideBarProps) {
                     <MenuGroupView
                         key={group.title}
                         menuGroup={group}
+                        onClick={(menuItem) => handleClick(menuItem)}
                     />
                 ))}
             </SidebarContent>
-
-            <Toaster richColors position="top-center" />
         </Sidebar>
     )
 }
 
-function MenuGroupView({ menuGroup }: { menuGroup: MenuGroup }) {
+function MenuGroupView({ menuGroup, onClick }: { menuGroup: MenuGroup, onClick: (menuItem: MenuItem) => void }) {
     return (
         < SidebarGroup >
-            <SidebarGroupLabel>{ menuGroup.title }</SidebarGroupLabel>
+            <SidebarGroupLabel>{menuGroup.title}</SidebarGroupLabel>
             <SidebarGroupContent>
                 {menuGroup.items.map((menuItem) => (
                     <MenuItemView
                         key={menuItem.path}
                         menuItem={menuItem}
+                        onClick={() => onClick(menuItem)}
                     />
                 ))}
             </SidebarGroupContent>
@@ -54,13 +68,16 @@ function MenuGroupView({ menuGroup }: { menuGroup: MenuGroup }) {
     )
 }
 
-function MenuItemView({ menuItem }: { menuItem: MenuItem }) {
+function MenuItemView({ menuItem, onClick }: { menuItem: MenuItem, onClick: () => void }) {
     const { setOpenMobile } = useSidebar()
 
     return (
         <SidebarMenu>
             <SidebarMenuItem>
-                <SidebarMenuButton asChild onClick={() => setOpenMobile(false)}>
+                <SidebarMenuButton asChild isActive={menuItem.isActive} onClick={() => {
+                    onClick()
+                    setOpenMobile(false)
+                }} className={menuItem.isActive ? "bg-black" : ""}>
                     <Link href={menuItem.path}>{menuItem.title}</Link>
                 </SidebarMenuButton>
             </SidebarMenuItem>
