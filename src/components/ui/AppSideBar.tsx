@@ -54,11 +54,11 @@ function AppSideBar() {
                     <Link href="/json-formatter">JSON Formatter</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-             {/* <SidebarMenuItem>
+             <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                     <Link href="/byte-converter">Byte Converter</Link>
                 </SidebarMenuButton>
-              </SidebarMenuItem> */}
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
