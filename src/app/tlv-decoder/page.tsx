@@ -131,7 +131,7 @@ export default function TLVDecoderCard() {
       </header>
       <Separator className="mb-6" />
 
-      <div className="flex flex-column gap-4 h-[calc(100%-100px)] md:flex-row">
+      <div className="flex flex-col gap-4 h-[calc(100%-100px)] md:flex-row">
         {/* Input Area */}
         <div className="flex flex-col md:flex-1">
           <Textarea
