@@ -18,9 +18,18 @@ const menuGroups: MenuGroup[] = [
             {
                 title: "String Encoder",
                 path: "/byte-converter", 
-            }
+            }, 
         ]
     }, 
+    {
+        title: "Playground", 
+        items: [
+            {
+                title: "Avatar Builder", 
+                path: "/avatar"
+            }
+        ]
+    }
 ]
 
 function Main({ children }: { children: React.ReactNode }) {
